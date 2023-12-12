@@ -1,0 +1,174 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <style>
+        body {
+        font-family: 'Arial', sans-serif;
+        text-align: center;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f8f8f8;
+        }
+
+        #game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        gap: 5px;
+        margin-bottom: 20px;
+        }
+
+        .cell {
+        width: 100px;
+        height: 100px;
+        font-size: 36px;
+        border: 2px solid #333;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        transition: background-color 0.3s ease;
+        }
+
+        .cell:hover {
+        background-color: #e0e0e0;
+        }
+
+        .cell:active {
+        background-color: #ccc;
+        }
+
+        #play-again {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        margin-bottom: 10px;
+        }
+
+        #play-again:hover {
+        background-color: #45a049;
+        }
+
+        #turn-label {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #555;
+        }
+
+        h1 {
+        color: #333;
+        }
+
+        script {
+        margin-top: 20px;
+        }
+    </style>
+    </head>
+    <body>
+    <div id="game-container">
+        <h1>Tic-Tac-Toe</h1>
+        <p id="turn-label">It's the turn of Player X</p>
+        <div id="board"></div>
+        <button id="play-again">Play Again</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const board = document.getElementById('board');
+        const playAgainButton = document.getElementById('play-again');
+        const turnLabel = document.getElementById('turn-label');
+        let currentPlayer = 'X';
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+
+        function checkWinner() {
+            const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6]             // Diagonals
+            ];
+
+            for (const pattern of winPatterns) {
+            const [a, b, c] = pattern;
+            if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+                alert(`Player ${gameBoard[a]} wins!`);
+                resetGame();
+                return;
+            }
+            }
+
+            if (!gameBoard.includes('')) {
+            alert('It\'s a Tie!');
+            resetGame();
+            return;
+            }
+        }
+
+        function handleClick(index) {
+            if (!gameActive || gameBoard[index] !== '') {
+            return;
+            }
+
+            gameBoard[index] = currentPlayer;
+            renderBoard();
+            
+            checkWinner();
+
+            if (gameActive) {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            updateTurnLabel();
+            }
+        }
+
+        function renderBoard() {
+            board.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.textContent = gameBoard[i];
+            cell.addEventListener('click', () => handleClick(i));
+            board.appendChild(cell);
+            }
+        }
+
+        function resetGame() {
+            gameBoard = ['', '', '', '', '', '', '', '', ''];
+            gameActive = true;
+            currentPlayer = 'X';
+            updateTurnLabel();
+            renderBoard();
+        }
+
+        function updateTurnLabel() {
+            turnLabel.textContent = `It's the turn of Player ${currentPlayer}`;
+        }
+
+        // Event listener for the Play Again button
+        playAgainButton.addEventListener('click', resetGame);
+
+        // Initial rendering of the board
+        renderBoard();
+        });
+    </script>
+    </body>
+    </html>
